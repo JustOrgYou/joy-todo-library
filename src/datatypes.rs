@@ -1,6 +1,8 @@
 use chrono::Duration;
 use chrono::NaiveDate;
 use chrono::NaiveTime;
+use chrono::DateTime;
+use chrono::Utc;
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -50,6 +52,14 @@ pub struct Keyword {
 }
 
 #[derive(Debug)]
+pub struct ArchiveProperties{
+    archive_time: DateTime<Utc>,
+    archive_file: String,
+    archive_category: String,
+    archive_todo: Keyword
+}
+
+#[derive(Debug)]
 pub struct Task {
     title: String,
     body: String,
@@ -57,15 +67,18 @@ pub struct Task {
     priority: Option<u32>,
     keyword: Option<Keyword>,
     tags: Vec<String>,
+    closed: Option<Timestamp>,
     scheduled: Option<Timestamp>,
     deadline: Option<Timestamp>,
     created: Option<Timestamp>,
+    archive: Option<ArchiveProperties>,
     properties: HashMap<String, String>,
 }
 
 #[derive(Debug)]
 pub struct NotebookMetadata {
-    title: String,
+    title: Option<String>,
+    archive_file: Option<String>,
     keywords: Vec<Keyword>,
 }
 
