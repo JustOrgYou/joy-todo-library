@@ -19,13 +19,13 @@ pub enum RepeaterType {
 #[derive(Debug)]
 pub struct Repeater {
     repeat: Duration,
-    periodicity_type: RepeaterType,
+    kind: RepeaterType,
 }
 
 #[derive(Debug)]
 pub struct Delay {
     delay: Duration,
-    delay_type: DelayType,
+    kind: DelayType,
 }
 
 #[derive(Debug)]
@@ -38,15 +38,39 @@ pub struct Timestamp {
 }
 
 #[derive(Debug)]
+enum KeywordType {
+    Active, // considered as "todo"
+    Incactive // Considered as "done"
+}
+
+#[derive(Debug)]
+pub struct Keyword {
+    name: String,
+    kind: KeywordType
+}
+
+#[derive(Debug)]
 pub struct Task {
     title: String,
     body: String,
     children: Vec<Task>,
     priority: Option<u32>,
-    keyword: String,
+    keyword: Option<Keyword>,
     tags: Vec<String>,
     scheduled: Option<Timestamp>,
     deadline: Option<Timestamp>,
     created: Option<Timestamp>,
     properties: HashMap<String, String>,
+}
+
+#[derive(Debug)]
+pub struct NotebookMetadata {
+    title: String,
+    keywords: Vec<Keyword>,
+}
+
+#[derive(Debug)]
+pub struct Notebook{
+    metadata: NotebookMetadata,
+    tasks: Vec<Task>,
 }
