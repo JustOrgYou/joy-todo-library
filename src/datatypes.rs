@@ -1,7 +1,7 @@
+use chrono::DateTime;
 use chrono::Duration;
 use chrono::NaiveDate;
 use chrono::NaiveTime;
-use chrono::DateTime;
 use chrono::Utc;
 use std::collections::HashMap;
 
@@ -41,26 +41,33 @@ pub struct Timestamp {
 
 #[derive(Debug)]
 enum KeywordType {
-    Active, // considered as "todo"
-    Incactive // Considered as "done"
+    Active,    // considered as "todo"
+    Incactive, // Considered as "done"
 }
 
 #[derive(Debug)]
 pub struct Keyword {
     name: String,
-    kind: KeywordType
+    kind: KeywordType,
 }
 
 #[derive(Debug)]
-pub struct ArchiveProperties{
+pub struct ArchiveProperties {
     archive_time: DateTime<Utc>,
     archive_file: String,
     archive_category: String,
-    archive_todo: Keyword
+    archive_todo: Keyword,
+}
+
+#[derive(Debug)]
+pub struct TaskSystemInfo {
+    uuid: String,     // runtime unique identifier
+    line_number: u32, // line number of title in the file
 }
 
 #[derive(Debug)]
 pub struct Task {
+    system_info: TaskSystemInfo,
     title: String,
     body: String,
     children: Vec<Task>,
@@ -70,7 +77,7 @@ pub struct Task {
     closed: Option<Timestamp>,
     scheduled: Option<Timestamp>,
     deadline: Option<Timestamp>,
-    created: Option<Timestamp>,
+    created: Option<DateTime<Utc>>,
     archive: Option<ArchiveProperties>,
     properties: HashMap<String, String>,
 }
@@ -83,7 +90,7 @@ pub struct NotebookMetadata {
 }
 
 #[derive(Debug)]
-pub struct Notebook{
+pub struct Notebook {
     metadata: NotebookMetadata,
     tasks: Vec<Task>,
 }
