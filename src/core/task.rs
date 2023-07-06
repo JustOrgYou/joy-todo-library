@@ -1,46 +1,57 @@
-use std::collections::HashMap;
-use chrono::{DateTime, Utc};
 use super::timestamp::*;
+use chrono::{DateTime, Utc};
+use derive_new::new;
+use getset::{Getters, Setters};
+use std::collections::HashMap;
+use typed_builder::TypedBuilder;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum KeywordType {
     Active,    // considered as "todo"
     Incactive, // Considered as "done"
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(new, Getters, Debug, PartialEq, Clone)]
 pub struct Keyword {
-    pub name: String,
-    pub kind: KeywordType,
+    name: String,
+    kind: KeywordType,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(new, Getters, Debug, PartialEq, Clone)]
 pub struct ArchiveProperties {
-    pub archive_time: DateTime<Utc>,
-    pub archive_file: String,
-    pub archive_category: String,
-    pub archive_todo: Keyword,
+    archive_time: DateTime<Utc>,
+    archive_file: String,
+    archive_category: String, // name of the Notebook in which the task was archived
+    archive_todo: Keyword,    // keyword of the task when it was archived
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(new, Getters, Debug, PartialEq, Clone)]
 pub struct TaskSystemInfo {
-    pub uuid: String,     // runtime unique identifier
-    pub line_number: u32, // line number of title in the file
+    // id: String,       // TODO: do we need runtime id?
+    line_number: u32, // line number of title in the file
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Getters, Setters, TypedBuilder, Debug, PartialEq, Clone)]
+#[builder(field_defaults(default, setter(strip_option)))]
 pub struct Task {
-    pub system_info: TaskSystemInfo,
-    pub title: String,
-    pub body: String,
-    pub children: Vec<Task>,
-    pub priority: Option<u32>,
-    pub keyword: Option<Keyword>,
-    pub tags: Vec<String>,
-    pub closed: Option<Timestamp>,
-    pub scheduled: Option<Timestamp>,
-    pub deadline: Option<Timestamp>,
-    pub created: Option<DateTime<Utc>>,
-    pub archive: Option<ArchiveProperties>,
-    pub properties: HashMap<String, String>,
+    #[builder(!default, setter(!strip_option))]
+    system_info: TaskSystemInfo,
+    /// If level is 0 it is considered as not specified (e.g. in org mode without any asterisk)
+    #[builder(!default, setter(!strip_option))]
+    pub level: u32,
+    priority: Option<u32>,
+    keyword: Option<Keyword>,
+    #[builder(!default, setter(!strip_option))]
+    title: String,
+    #[builder(default, setter(!strip_option))]
+    tags: Vec<String>,
+    closed: Option<Timestamp>,
+    scheduled: Option<Timestamp>,
+    deadline: Option<Timestamp>,
+    created: Option<DateTime<Utc>>,
+    archive: Option<ArchiveProperties>,
+    #[builder(default, setter(!strip_option))]
+    properties: HashMap<String, String>,
+    #[builder(!default, setter(!strip_option))]
+    body: String,
 }

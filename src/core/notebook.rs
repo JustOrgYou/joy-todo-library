@@ -1,40 +1,32 @@
-use super::task::*;
+use crate::core::task::{Task, Keyword};
+use derive_new::new;
+use getset::{Getters, Setters};
 
-#[derive(Debug, PartialEq)]
+/// Metadata that may be set inside the file
+#[derive(new, Debug, PartialEq, Default)]
 pub struct NotebookMetadata {
-    title: Option<String>, // title may be set inside a file
-    archive_file: Option<String>, // archive file may be set inside a file
-    keywords: Vec<Keyword>, // keywords may be set inside a file
+    pub title: Option<String>,
+    pub archive_file: Option<String>,
+    pub keywords: Vec<Keyword>,
 }
 
-#[derive(Debug, PartialEq)]
-pub struct Notebook {
-    pub metadata: NotebookMetadata,
-    pub tasks: Vec<Task>,
+#[derive(new, Getters, Setters, Debug, PartialEq, Default)]
+pub struct Notebook<'a> {
+    #[getset(get = "pub", set = "pub")]
+    metadata: NotebookMetadata,
+    #[getset(get = "pub")]
+    tasks: Vec<&'a mut Task>,
 }
 
-
-impl Notebook {
-    pub fn empty() -> Notebook {
-        Notebook {
-            metadata: NotebookMetadata {
-                title: None,
-                archive_file: None,
-                keywords: Vec::new(),
-            },
-            tasks: Vec::new(),
-        }
+impl<'a> Notebook<'a> {
+    fn add_task(&mut self, task: &'a mut Task) {
+        let _ = &self.tasks.push(task);
     }
-    pub fn set_title(&mut self, title: String) {
-        self.metadata.title = Some(title);
+    fn find_task(&mut self) -> &Task {
+        self.tasks.get(0).expect("TODO")
     }
-    pub fn set_archive_file(&mut self, archive_file: String) {
-        self.metadata.archive_file = Some(archive_file);
+    fn find_task_mut(&mut self) -> &mut Task {
+        self.tasks.get_mut(0).expect("TODO")
     }
-    pub fn set_keywords(&mut self, keywords: Vec<Keyword>) {
-        self.metadata.keywords = keywords;
-    }
-    pub fn add_task(&mut self, task: Task) {
-        self.tasks.push(task);
-    }
+    // TODO: implement removing and searching operations
 }

@@ -7,3 +7,6 @@ edition = "2021"
 
 [dependencies]
 chrono = "0.4.26"
+derive-new = "0.5.9"
+typed-builder = "0.15.0"
+getset = "0.1.2"
