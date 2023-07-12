@@ -10,3 +10,7 @@ chrono = "0.4.26"
 derive-new = "0.5.9"
 typed-builder = "0.15.0"
 getset = "0.1.2"
+
+
+[lib]
+crate-type = ["staticlib", "cdylib"]

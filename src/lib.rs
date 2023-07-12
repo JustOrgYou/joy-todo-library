@@ -1,6 +1,7 @@
 #[allow(dead_code)] // TODO: remove this
 pub mod core;
 pub mod parsers;
+mod api;
 
 mod prelude{
     pub use super::core::prelude::*;
